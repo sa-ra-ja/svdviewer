@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CMSIS-SVD XSLT Transformer</title>
+</head>
+<body>
+  <h2>Upload your CMSIS-SVD XML file</h2>
+  <input type="file" id="xmlFile" accept=".xml,.svd"/>
+  <div id="output"></div>
+
+  <script>
+    async function fetchXSLT() {
+      // Place your XSL file in the site, e.g. /transform.xsl - this will be public
+      const response = await fetch('for_svd.xsl');
+      const xslText = await response.text();
+      return new window.DOMParser().parseFromString(xslText, "text/xml");
+    }
+
+    document.getElementById('xmlFile').addEventListener('change', async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(event.target.result, "text/xml");
+        const xslDoc = await fetchXSLT();
+
+        // Perform transformation
+        if (window.XSLTProcessor) {
+          const xsltProcessor = new XSLTProcessor();
+          xsltProcessor.importStylesheet(xslDoc);
+          const resultDoc = xsltProcessor.transformToFragment(xmlDoc, document);
+
+          document.getElementById('output').innerHTML = '';
+          document.getElementById('output').appendChild(resultDoc);
+        } else {
+          alert('XSLT not supported');
+        }
+      };
+      reader.readAsText(file);
+    });
+  </script>
+</body>
+</html>
+
