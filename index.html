@@ -4,7 +4,7 @@
   <title>CMSIS-SVD XSLT Transformer</title>
 </head>
 <body>
-  <h2>Upload your CMSIS-SVD XML file</h2>
+  <h2 id="Pretext">Upload your CMSIS-SVD XML file</h2>
   <input type="file" id="xmlFile" accept=".xml,.svd"/>
   <div id="output"></div>
 
@@ -34,6 +34,10 @@
 
           document.getElementById('output').innerHTML = '';
           document.getElementById('output').appendChild(resultDoc);
+             // After successful transform and displaying the result
+document.getElementById('xmlFile').style.display = 'none'; 
+document.getElementById('Pretext').style.display = 'none'; 
+document.getElementById('output').style.display = 'block';
         } else {
           alert('XSLT not supported');
         }
